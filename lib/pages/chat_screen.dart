@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gemini_photex/components/build_markdown.dart';
 import 'package:gemini_photex/components/chat_input_box.dart';
 
@@ -25,7 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Flutter Gemini"),
+          title: const Text("Chat With Gemini"),
         ),
         body: Column(
           children: [
@@ -49,39 +50,48 @@ class _ChatScreenState extends State<ChatScreen> {
             if (loading) const CircularProgressIndicator(),
             ChatInputBox(
               controller: controller,
-              onSend: () {
-                if (controller.text.isNotEmpty) {
-                  final searchedText = controller.text;
-                  chats.add(Content(
-                      role: 'user', parts: [Parts(text: searchedText)]));
-                  controller.clear();
-                  loading = true;
-
-                  gemini.streamChat(chats).listen((value) {
-                    loading = false;
-                    setState(() {
-                      if (chats.isNotEmpty &&
-                          chats.last.role == value.content?.role) {
-                        chats.last.parts!.last.text =
-                            '${chats.last.parts!.last.text}${value.output}';
-                      } else {
-                        chats.add(Content(
-                            role: 'model', parts: [Parts(text: value.output)]));
-                      }
-                    });
-                  });
-                }
-              },
+              onSend: sendMessageAction
             )
           ],
         ));
+  }
+
+  void sendMessageAction()
+  {
+    if (controller.text.isNotEmpty) {
+      final searchedText = controller.text;
+      chats.add(Content(
+          role: 'user', parts: [Parts(text: searchedText)]));
+      controller.clear();
+      loading = true;
+      gemini.streamChat(chats).listen((value) {
+        loading = false;
+        setState(() {
+          if (chats.isNotEmpty &&
+              chats.last.role == value.content?.role) {
+            chats.last.parts!.last.text =
+            '${chats.last.parts!.last.text}${value.output}';
+          } else {
+            chats.add(Content(
+                role: 'model', parts: [Parts(text: value.output)]));
+          }
+        });
+      });
+    } else {
+      Fluttertoast.showToast(
+          msg: "Please enter something.",
+          backgroundColor: Colors.grey,
+          textColor: Colors.white);
+    }
   }
 
   Widget chatItem(BuildContext context, int index) {
     final Content content = chats[index];
     return Card(
       elevation: 0,
-      color: content.role == 'model' ? Colors.grey.shade800 : Colors.green,
+      color: content.role == 'model'
+          ? Colors.grey.shade800
+          : Colors.lightGreen.shade700,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -92,5 +102,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-
-
