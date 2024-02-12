@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 class CodeWrapperWidget extends StatefulWidget {
   final Widget child;
   final String text;
   final String language;
-
   const CodeWrapperWidget(this.child, this.text, this.language, {super.key});
 
   @override
@@ -25,9 +23,6 @@ class _PreWrapperState extends State<CodeWrapperWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var brightness =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    bool isDark = brightness == Brightness.dark;
     return Stack(
       children: [
         widget.child,
@@ -45,9 +40,7 @@ class _PreWrapperState extends State<CodeWrapperWidget> {
                     padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
-                        border: Border.all(
-                            width: 0.5,
-                            color: isDark ? Colors.white : Colors.black)),
+                        border: Border.all(width: 0.5, color: Colors.black)),
                     child: Text(widget.language),
                   )),
                 InkWell(

@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 class ChatInputBox extends StatelessWidget {
   final TextEditingController? controller;
-  final VoidCallback? onSend, onClickCamera;
-
+  final VoidCallback? onSend;
   const ChatInputBox({
     super.key,
     this.controller,
     this.onSend,
-    this.onClickCamera,
   });
 
   @override
@@ -18,14 +16,6 @@ class ChatInputBox extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (onClickCamera != null)
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: IconButton(
-                  onPressed: onClickCamera,
-                  color: Theme.of(context).colorScheme.onSecondary,
-                  icon: const Icon(Icons.file_copy_rounded)),
-            ),
           Expanded(
               child: TextField(
             controller: controller,
@@ -35,8 +25,8 @@ class ChatInputBox extends StatelessWidget {
             textInputAction: TextInputAction.newline,
             keyboardType: TextInputType.multiline,
             decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-              hintText: 'Message',
+              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+              hintText: ' Message',
               border: InputBorder.none,
             ),
             onTapOutside: (event) =>
