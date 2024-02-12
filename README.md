@@ -1,6 +1,6 @@
-# gemini_photex
+# gemini_simple_stream
 
-gemini_api_app
+Geminiと対話するチャットアプリ
 
 ## Getting Started
 
